@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧮 Tính FCR - Hệ Số Chuyển Hóa Thức Ăn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #22c55e;
+            --dark-green: #15803d;
+            --light-green: #dcfce7;
+            --yellow: #fbbf24;
+            --light-yellow: #fef3c7;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --white: #ffffff;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #fef9c3 50%, #f0fdf4 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--dark-green) 0%, var(--primary-green) 50%, #4ade80 100%);
+            color: white;
+            padding: 40px 20px 60px;
+            text-align: center;
+            border-radius: 0 0 40px 40px;
+            position: relative;
+            overflow: hidden;
+            Animation: headerFade 0.8s ease-out;
+        }
+
+        @keyframes headerFade {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        .header-emojis {
+            font-size: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .floating-emoji {
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .floating-emoji:nth-child(1) { animation-delay: 0s; }
+        .floating-emoji:nth-child(2) { animation-delay: 0.5s; }
+        .floating-emoji:nth-child(3) { animation-delay: 1s; }
+        .floating-emoji:nth-child(4) { animation-delay: 1.5s; }
+        .floating-emoji:nth-child(5) { animation-delay: 2s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            margin-top: -40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-green);
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Animal Selection */
+        .section-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark-green);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .animal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 500px) {
+            .animal-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .animal-option {
+            background: var(--light-green);
+            border: 3px solid transparent;
+            border-radius: 16px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: popIn 0.4s ease-out backwards;
+        }
+
+        .animal-option:nth-child(1) { animation-delay: 0.1s; }
+        .animal-option:nth-child(2) { animation-delay: 0.2s; }
+        .animal-option:nth-child(3) { animation-delay: 0.3s; }
+        .animal-option:nth-child(4) { animation-delay: 0.4s; }
+        .animal-option:nth-child(5) { animation-delay: 0.5s; }
+        .animal-option:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .animal-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+        }
+
+        .animal-option.selected {
+            background: linear-gradient(135deg, var(--light-green), white);
+            border-color: var(--primary-green);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+        }
+
+        .animal-emoji {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .animal-name {
+            font-weight: 600;
+            color: var(--dark-green);
+            font-size: 0.9rem;
+        }
+
+        /* Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            animation: fadeIn 0.5s ease-out backwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.3s; }
+        .form-group:nth-child(2) { animation-delay: 0.4s; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .input-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px 15px 15px 50px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+        }
+
+        .input-unit {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Calculate Button */
+        .calculate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--dark-green), var(--primary-green));
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(34, 197, 94, 0.5);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .calculate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Result Section */
+        .result-section {
+            background: linear-gradient(135deg, var(--light-green), var(--light-yellow));
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 25px;
+            text-align: center;
+            display: none;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-section.show {
+            display: block;
+        }
+
+        .result-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+
+        .result-value {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--dark-green);
+            margin-bottom: 5px;
+            animation: scaleUp 0.4s ease-out;
+        }
+
+        @keyframes scaleUp {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .result-unit {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Gauge */
+        .gauge-container {
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .gauge-bar {
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            background: #e5e7eb;
+        }
+
+        .gauge-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .gauge-good {
+            flex: 1;
+            background: linear-gradient(90deg, var(--success), #34d399);
+        }
+
+        .gauge-average {
+            flex: 1;
+            background: linear-gradient(90deg, var(--warning), #fbbf24);
+        }
+
+        .gauge-bad {
+            flex: 1;
+            background: linear-gradient(90deg, var(--danger), #f87171);
+        }
+
+        .gauge-indicator {
+            position: absolute;
+            top: -5px;
+            width: 30px;
+            height: 30px;
+            background: var(--dark-green);
+            border: 4px solid white;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transform: translateX(-50%);
+            transition: left 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .gauge-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Rating Badge */
+        .rating-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 15px 0;
+            animation: bounce 0.6s ease;
+        }
+
+        .rating-excellent {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+        }
+
+        .rating-good {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: var(--text-dark);
+        }
+
+        .rating-average {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            color: white;
+        }
+
+        .rating-poor {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .result-explanation {
+            font-size: 1rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        /* Examples Section */
+        .examples-section {
+            margin-top: 30px;
+        }
+
+        .examples-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-green);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        @media (max-width: 500px) {
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .example-card {
+            background: var(--light-green);
+            border-radius: 16px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .example-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.2);
+        }
+
+        .example-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .example-emoji {
+            font-size: 1.5rem;
+        }
+
+        .example-name {
+            font-weight: 700;
+            color: var(--dark-green);
+            font-size: 0.95rem;
+        }
+
+        .example-data {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .example-data span {
+            display: block;
+            margin: 3px 0;
+        }
+
+        /* Info Section */
+        .info-section {
+            margin-top: 30px;
+        }
+
+        .info-card {
+            background: var(--light-yellow);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .info-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card p {
+            line-height: 1.7;
+            color: #78350f;
+            font-size: 0.95rem;
+        }
+
+        .info-card p {
+            margin-bottom: 12px;
+        }
+
+        .info-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .tips-box {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .tip-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #e5e7eb;
+        }
+
+        .tip-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .tip-icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .tip-text {
+            color: var(--text-dark);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Reference Table */
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .reference-table th {
+            background: var(--dark-green);
+            color: white;
+            padding: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .reference-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+        }
+
+        .reference-table tr:hover {
+            background: var(--light-green);
+        }
+
+        .reference-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* History Section */
+        .history-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .history-section.show {
+            display: block;
+        }
+
+        .history-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-green);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .history-list {
+            space-y: 10px;
+        }
+
+        .history-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary-green);
+            animation: fadeIn Right 0.3s ease-out;
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .history-animal {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .history-animal-emoji {
+            font-size: 1.5rem;
+        }
+
+        .history-fcr {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-green);
+        }
+
+        .history-rating {
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .footer p {
+            margin-bottom: 10px;
+        }
+
+        .footer-emojis {
+            font-size: 1.5rem;
+            margin-top: 10px;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: #fef2f2;
+            border: 2px solid var(--danger);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+            color: var(--danger);
+            font-weight: 600;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Scroll Animation */
+        .fade-in-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1 class="header-title">🧮 Máy Tính FCR</h1>
+        <p class="header-subtitle">Hệ Số Chuyển Hóa Thức Ăn - Tối Ưu Chăn Nuôi</p>
+        <div class="header-emojis">
+            <span class="floating-emoji">🌾</span>
+            <span class="floating-emoji">🌽</span>
+            <span class="floating-emoji">🐔</span>
+            <span class="floating-emoji">🐷</span>
+            <span class="floating-emoji">🌿</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Main Card -->
+        <div class="card">
+            <h2 class="card-title">📊 Tính Toán FCR</h2>
+
+            <!-- Animal Selection -->
+            <div class="section-label">🐾 Chọn loại vật nuôi:</div>
+            <div class="animal-grid" id="animalGrid">
+                <div class="animal-option selected" data-animal="chicken" data-emoji="🐔" data-name="Gà">
+                    <span class="animal-emoji">🐔</span>
+                    <span class="animal-name">Gà</span>
+                </div>
+                <div class="animal-option" data-animal="pig" data-emoji="🐷" data-name="Heo">
+                    <span class="animal-emoji">🐷</span>
+                    <span class="animal-name">Heo</span>
+                </div>
+                <div class="animal-option" data-animal="cow" data-emoji="🐄" data-name="Bò">
+                    <span class="animal-emoji">🐄</span>
+                    <span class="animal-name">Bò</span>
+                </div>
+                <div class="animal-option" data-animal="duck" data-emoji="🦆" data-name="Vịt">
+                    <span class="animal-emoji">🦆</span>
+                    <span class="animal-name">Vịt</span>
+                </div>
+                <div class="animal-option" data-animal="fish" data-emoji="🐟" data-name="Cá">
+                    <span class="animal-emoji">🐟</span>
+                    <span class="animal-name">Cá</span>
+                </div>
+                <div class="animal-option" data-animal="shrimp" data-emoji="🦐" data-name="Tôm">
+                    <span class="animal-emoji">🦐</span>
+                    <span class="animal-name">Tôm</span>
+                </div>
+            </div>
+
+            <!-- Input Form -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="input-label">🍽️ Lượng thức ăn tiêu thụ:</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🌾</span>
+                        <input type="number" id="feedInput" class="input-field" placeholder="Nhập số..." min="0" step="0.1">
+                        <span class="input-unit">kg</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="input-label">⚖️ Khối lượng tăng trọng:</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">📈</span>
+                        <input type="number" id="weightInput" class="input-field" placeholder="Nhập số..." min="0" step="0.1">
+                        <span class="input-unit">kg</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculate Button -->
+            <button class="calculate-btn" id="calculateBtn">
+                ⚡ Tính Toán FCR
+            </button>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage"></div>
+
+            <!-- Result Section -->
+            <div class="result-section" id="resultSection">
+                <p class="result-label">📈 Kết quả FCR cho <span id="resultAnimalName">Gà</span>:</p>
+                <div class="result-value" id="fcrResult">1.85</div>
+                <span class="result-unit">kg thức ăn / kg tăng trọng</span>
+
+                <!-- Gauge -->
+                <div class="gauge-container">
+                    <div class="gauge-indicator" id="gaugeIndicator"></div>
+                    <div class="gauge-bar">
+                        <div class="gauge-segment gauge-good">Tốt</div>
+                        <div class="gauge-segment gauge-average">TB</div>
+                        <div class="gauge-segment gauge-bad">Kém</div>
+                    </div>
+                    <div class="gauge-labels">
+                        <span>0</span>
+                        <span id="gaugeMid">2.5</span>
+                        <span>5+</span>
+                    </div>
+                </div>
+
+                <!-- Rating Badge -->
+                <div class="rating-badge rating-excellent" id="ratingBadge">
+                    🏆 Xuất Sắc!
+                </div>
+
+                <!-- Explanation -->
+                <div class="result-explanation" id="resultExplanation">
+                    FCR 1.85 là ở mức tuyệt vời cho chăn nuôi gà! Trang trại của bạn đang hoạt động cực kỳ hiệu quả. Mỗi 1kg thịt gà chỉ tốn 1.85kg thức ăn. Tiếp tục duy trì nhé! 🎯
+                </div>
+            </div>
+        </div>
+
+        <!-- Examples Section -->
+        <div class="card examples-section fade-in-on-scroll">
+            <h2 class="examples-title">📋 Ví Dụ Minh Họa</h2>
+            <p style="margin-bottom: 20px; color: var(--text-light);">Nhấn vào ví dụ để tự động tính kết quả</p>
+            <div class="examples-grid">
+                <div class="example-card" data-example="1">
+                    <div class="example-header">
+                        <span class="example-emoji">🐔</span>
+                        <span class="example-name">Trang trại gà thịt</span>
+                    </div>
+                    <div class="example-data">
+                        <span>🌾 Thức ăn: <strong>500 kg</strong></span>
+                        <span>📈 Tăng trọng: <strong>250 kg</strong></span>
+                        <span>🎯 FCR: <strong>2.0</strong></span>
+                    </div>
+                </div>
+                <div class="example-card" data-example="2">
+                    <div class="example-header">
+                        <span class="example-emoji">🐷</span>
+                        <span class="example-name">Trại heo nái</span>
+                    </div>
+                    <div class="example-data">
+                        <span>🌾 Thức ăn: <strong>1200 kg</strong></span>
+                        <span>📈 Tăng trọng: <strong>400 kg</strong></span>
+                        <span>🎯 FCR: <strong>3.0</strong></span>
+                    </div>
+                </div>
+                <div class="example-card" data-example="3">
+                    <div class="example-header">
+                        <span class="example-emoji">🐄</span>
+                        <span class="example-name">Trại bò bắp</span>
+                    </div>
+                    <div class="example-data">
+                        <span>🌾 Thức ăn: <strong>800 kg</strong></span>
+                        <span>📈 Tăng trọng: <strong>200 kg</strong></span>
+                        <span>🎯 FCR: <strong>4.0</strong></span>
+                    </div>
+                </div>
+                <div class="example-card" data-example="4">
+                    <div class="example-header">
+                        <span class="example-emoji">🐟</span>
+                        <span class="example-name">Ao nuôi cá tra</span>
+                    </div>
+                    <div class="example-data">
+                        <span>🌾 Thức ăn: <strong>300 kg</strong></span>
+                        <span>📈 Tăng trọng: <strong>150 kg</strong></span>
+                        <span>🎯 FCR: <strong>2.0</strong></span>
+                    </div>
+                </div>
+                <div class="example-card" data-example="5">
+                    <div class="example-header">
+                        <span class="example-emoji">🦐</span>
+                        <span class="example-name">Ao nuôi tôm sú</span>
+                    </div>
+                    <div class="example-data">
+                        <span>🌾 Thức ăn: <strong>80 kg</strong></span>
+                        <span>📈 Tăng trọng: <strong>40 kg</strong></span>
+                        <span>🎯 FCR: <strong>2.0</strong></span>
+                    </div>
+                </div>
+                <div class="example-card" data-example="6">
+                    <div class="example-header">
+                        <span class="example-emoji">🦆</span>
+                        <span class="example-name">Trại vịt thịt</span>
+                    </div>
+                    <div class="example-data">
+                        <span>🌾 Thức ăn: <strong>350 kg</strong></span>
+                        <span>📈 Tăng trọng: <strong>175 kg</strong></span>
+                        <span>🎯 FCR: <strong>2.0</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div class="card history-section fade-in-on-scroll" id="historySection">
+            <h2 class="history-title">📜 Lịch Sử Tính Toán</h2>
+            <div class="history-list" id="historyList"></div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="card info-section fade-in-on-scroll">
+            <h2 class="examples-title">📖 Hướng Dẫn Sử Dụng</h2>
+            
+            <div class="info-card">
+                <h3>🎯 4 Bước Đơn Giản:</h3>
+                <p><strong>Bước 1:</strong> Chọn loại vật nuôi bạn đang nuôi (gà, heo, bò, vịt, cá, tôm)</p>
+                <p><strong>Bước 2:</strong> Nhập lượng thức ăn tiêu thụ trong một chu kỳ (kg)</p>
+                <p><strong>Bước 3:</strong> Nhập tổng khối lượng tăng trọng của đàn (kg)</p>
+                <p><strong>Bước 4:</strong> Nhấn nút "Tính Toán FCR" để xem kết quả</p>
+            </div>
+
+            <div class="info-card">
+                <h3>💡 FCR là gì?</h3>
+                <p><strong>FCR (Feed Conversion Ratio)</strong> là chỉ số quan trọng đo lường hiệu quả chuyển hóa thức ăn sang trọng lượng cơ thể của vật nuôi.</p>
+                <p><strong>Công thức:</strong> FCR = Lượng thức ăn tiêu thụ / Khối lượng tăng trọng</p>
+                <p><strong>Ý nghĩa:</strong> FCR càng thấp thì hiệu quả càng cao - ít thức ăn tạo ra nhiều thịt hơn!</p>
+            </div>
+
+            <div class="info-card">
+                <h3>✨ Mẹo Cải Thiện FCR</h3>
+                <div class="tips-box">
+                    <div class="tip-item">
+                        <span class="tip-icon">🧬</span>
+                        <span class="tip-text"><strong>Giống vật nuôi chất lượng:</strong> Chọn giống có khả năng tăng trưởng tốt và bệnh tật thấp</span>
+                    </div>
+                    <div class="tip-item">
+                        <span class="tip-icon">🍽️</span>
+                        <span class="tip-text"><strong>Dinh dưỡng cân đối:</strong> Sử dụng thức ăn đầy đủ đạm, vitamin, khoáng chất</span>
+                    </div>
+                    <div class="tip-item">
+                        <span class="tip-icon">🌡️</span>
+                        <span class="tip-text"><strong>Quản lý môi trường:</strong> Duy trì nhiệt độ, độ ẩm phù hợp cho vật nuôi</span>
+                    </div>
+                    <div class="tip-item">
+                        <span class="tip-icon">💧</span>
+                        <span class="tip-text"><strong>Nguồn nước sạch:</strong> Đảm bảo nước uống luôn sạch và đủ</span>
+                    </div>
+                    <div class="tip-item">
+                        <span class="tip-icon">💉</span>
+                        <span class="tip-text"><strong>Vắc-xin phòng bệnh:</strong> Tiêm phòng định kỳ và theo dõi sức khỏe thường xuyên</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3>📊 Bảng Tham Chiếu FCR Tiêu Chuẩn</h3>
+                <table class="reference-table">
+                    <thead>
+                        <tr>
+                            <th>Loại Vật Nuôi</th>
+                            <th>FCR Tốt</th>
+                            <th>FCR Trung Bình</th>
+                            <th>FCR Kém</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🐔 Gà thịt</td>
+                            <td>1.4 - 1.8</td>
+                            <td>1.9 - 2.3</td>
+                            <td>> 2.3</td>
+                        </tr>
+                        <tr>
+                            <td>🐷 Heo thịt</td>
+                            <td>2.3 - 2.7</td>
+                            <td>2.8 - 3.2</td>
+                            <td>> 3.2</td>
+                        </tr>
+                        <tr>
+                            <td>🐄 Bò thịt</td>
+                            <td>3.5 - 4.5</td>
+                            <td>4.6 - 5.5</td>
+                            <td>> 5.5</td>
+                        </tr>
+                        <tr>
+                            <td>🦆 Vịt thịt</td>
+                            <td>2.0 - 2.4</td>
+                            <td>2.5 - 2.9</td>
+                            <td>> 2.9</td>
+                        </tr>
+                        <tr>
+                            <td>🐟 Cá tra</td>
+                            <td>1.3 - 1.6</td>
+                            <td>1.7 - 2.0</td>
+                            <td>> 2.0</td>
+                        </tr>
+                        <tr>
+                            <td>�� Tôm nuôi</td>
+                            <td>1.2 - 1.5</td>
+                            <td>1.6 - 2.0</td>
+                            <td>> 2.0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>🌾 Công cụ hỗ trợ chăn nuôi hiệu quả 🌾</p>
+            <p>© 2026 FCR Calculator - Phát triển cho nông nghiệp Việt Nam</p>
+            <div class="footer-emojis">
+                🐔 🐷 🐄 🦆 🐟 🦐
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Data
+        const animalData = {
+            chicken: { name: 'Gà', emoji: '🐔', good: '1.4-1.8', avg: '1.9-2.3', poor: '>2.3' },
+            pig: { name: 'Heo', emoji: '🐷', good: '2.3-2.7', avg: '2.8-3.2', poor: '>3.2' },
+            cow: { name: 'Bò', emoji: '🐄', good: '3.5-4.5', avg: '4.6-5.5', poor: '>5.5' },
+            duck: { name: 'Vịt', emoji: '🦆', good: '2.0-2.4', avg: '2.5-2.9', poor: '>2.9' },
+            fish: { name: 'Cá', emoji: '🐟', good: '1.3-1.6', avg: '1.7-2.0', poor: '>2.0' },
+            shrimp: { name: 'Tôm', emoji: '🦐', good: '1.2-1.5', avg: '1.6-2.0', poor: '>2.0' }
+        };
+
+        const examples = [
+            { animal: 'chicken', feed: 500, weight: 250 },
+            { animal: 'pig', feed: 1200, weight: 400 },
+            { animal: 'cow', feed: 800, weight: 200 },
+            { animal: 'fish', feed: 300, weight: 150 },
+            { animal: 'shrimp', feed: 80, weight: 40 },
+            { animal: 'duck', feed: 350, weight: 175 }
+        ];
+
+        let history = [];
+        let selectedAnimal = 'chicken';
+
+        // DOM Elements
+        const animalGrid = document.getElementById('animalGrid');
+        const feedInput = document.getElementById('feedInput');
+        const weightInput = document.getElementById('weightInput');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultSection = document.getElementById('resultSection');
+        const resultAnimalName = document.getElementById('resultAnimalName');
+        const fcrResult = document.getElementById('fcrResult');
+        const gaugeIndicator = document.getElementById('gaugeIndicator');
+        const gaugeMid = document.getElementById('gaugeMid');
+        const ratingBadge = document.getElementById('ratingBadge');
+        const resultExplanation = document.getElementById('resultExplanation');
+        const historySection = document.getElementById('historySection');
+        const historyList = document.getElementById('historyList');
+        const exampleCards = document.querySelectorAll('.example-card');
+
+        // Animal Selection
+        animalGrid.addEventListener('click', (e) => {
+            const option = e.target.closest('.animal-option');
+            if (!option) return;
+
+            document.querySelectorAll('.animal-option').forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            
+            selectedAnimal = option.dataset.animal;
+            
+            // Update gauge labels
+            const ranges = getFCRRanges(selectedAnimal);
+            gaugeMid.textContent = ranges.mid;
+        });
+
+        // Example Cards
+        exampleCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const exampleIndex = parseInt(card.dataset.example) - 1;
+                const example = examples[exampleIndex];
+                
+                // Select animal
+                document.querySelectorAll('.animal-option').forEach(opt => {
+                    opt.classList.toggle('selected', opt.dataset.animal === example.animal);
+                });
+                selectedAnimal = example.animal;
+                
+                // Set inputs
+                feedInput.value = example.feed;
+                weightInput.value = example.weight;
+                
+                // Calculate
+                calculateFCR();
+            });
+        });
+
+        // Calculate
+        calculateBtn.addEventListener('click', calculateFCR);
+
+        // Enter key to calculate
+        feedInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculateFCR();
+        });
+        weightInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') calculateFCR();
+        });
+
+        function calculateFCR() {
+            const feed = parseFloat(feedInput.value);
+            const weight = parseFloat(weightInput.value);
+
+            // Validation
+            if (isNaN(feed) || isNaN(weight)) {
+                showError('Vui lòng nhập đầy đủ lượng thức ăn và khối lượng tăng trọng!');
+                return;
+            }
+
+            if (feed <= 0 || weight <= 0) {
+                showError('Giá trị phải lớn hơn 0!');
+                return;
+            }
+
+            hideError();
+
+            // Calculate FCR
+            const fcr = feed / weight;
+
+            // Get rating
+            const rating = getRating(fcr, selectedAnimal);
+
+            // Display result
+            displayResult(fcr, rating);
+
+            // Add to history
+            addToHistory(fcr, rating);
+        }
+
+        function getFCRRanges(animal) {
+            const ranges = {
+                chicken: { min: 1.4, maxGood: 1.8, maxAvg: 2.3, mid: 2.35 },
+                pig: { min: 2.3, maxGood: 2.7, maxAvg: 3.2, mid: 3.25 },
+                cow: { min: 3.5, maxGood: 4.5, maxAvg: 5.5, mid: 5.0 },
+                duck: { min: 2.0, maxGood: 2.4, maxAvg: 2.9, mid: 2.45 },
+                fish: { min: 1.3, maxGood: 1.6, maxAvg: 2.0, mid: 1.65 },
+                shrimp: { min: 1.2, maxGood: 1.5, maxAvg: 2.0, mid: 1.6 }
+            };
+            return ranges[animal];
+        }
+
+        function getRating(fcr, animal) {
+            const ranges = getFCRRanges(animal);
+
+            if (fcr <= ranges.maxGood) {
+                return {
+                    level: 'excellent',
+                    text: '🏆 Xuất Sắc!',
+                    className: 'rating-excellent',
+                    explanation: `FCR ${fcr.toFixed(2)} là ở mức tuyệt vời cho chăn nuôi ${animalData[animal].name.toLowerCase()}! Trang trại của bạn đang hoạt động cực kỳ hiệu quả. Mỗi 1kg thịt chỉ tốn ${fcr.toFixed(2)}kg thức ăn. Tiếp tục duy trì nhé! 🎯`
+                };
+            } else if (fcr <= ranges.maxAvg) {
+                return {
+                    level: 'good',
+                    text: '✅ Tốt!',
+                    className: 'rating-good',
+                    explanation: `FCR ${fcr.toFixed(2)} ở mức khá tốt cho chăn nuôi ${animalData[animal].name.toLowerCase()}. Có thể cải thiện bằng cách kiểm tra chất lượng thức ăn và môi trường nuôi. 💪`
+                };
+            } else if (fcr <= ranges.maxAvg + 1) {
+                return {
+                    level: 'average',
+                    text: '⚠️ Trung Bình',
+                    className: 'rating-average',
+                    explanation: `FCR ${fcr.toFixed(2)} ở mức trung bình. Nên xem xét lại: giống vật nuôi, chất lượng thức ăn, quản lý môi trường và sức khỏe đàn. 📋`
+                };
+            } else {
+                return {
+                    level: 'poor',
+                    text: '🔴 Cần Cải Thiện',
+                    className: 'rating-poor',
+                    explanation: `FCR ${fcr.toFixed(2)} cao hơn khuyến nghị. Hãy kiểm tra: bệnh tật, thức ăn hư, environment, mật độ nuôi. Liên chuyên gia tư vấn! 🚨`
+                };
+            }
+        }
+
+        function displayResult(fcr, rating) {
+            const ranges = getFCRRanges(selectedAnimal);
+            const animal = animalData[selectedAnimal];
+
+            // Show result section
+            resultSection.classList.add('show');
+
+            // Update values
+            resultAnimalName.textContent = animal.name.toLowerCase();
+            fcrResult.textContent = fcr.toFixed(2);
+
+            // Update gauge indicator position
+            const gaugeWidth = resultSection.offsetWidth - 30;
+            const percent = Math.min((fcr / (ranges.maxAvg + 1)) * 100, 100);
+            gaugeIndicator.style.left = `${percent}%`;
+
+            // Update rating badge
+            ratingBadge.className = `rating-badge ${rating.className}`;
+            ratingBadge.textContent = rating.text;
+
+            // Update explanation
+            resultExplanation.textContent = rating.explanation;
+
+            // Scroll to result
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function addToHistory(fcr, rating) {
+            const animal = animalData[selectedAnimal];
+
+            history.unshift({
+                animal: animal,
+                fcr: fcr,
+                rating: rating
+            });
+
+            // Keep only last 10
+            history = history.slice(0, 10);
+
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            if (history.length === 0) {
+                historySection.classList.remove('show');
+                return;
+            }
+
+            historySection.classList.add('show');
+
+            historyList.innerHTML = history.map((item, index) => {
+                const ratingColors = {
+                    excellent: { bg: '#dcfce7', color: '#15803d' },
+                    good: { bg: '#fef3c7', color: '#92400e' },
+                    average: { bg: '#fed7aa', color: '#c2410c' },
+                    poor: { bg: '#fecaca', color: '#b91c1c' }
+                };
+                const ratingColor = ratingColors[item.rating.level];
+
+                return `
+                    <div class="history-item" style="animation-delay: ${index * 0.1}s">
+                        <span class="history-animal">
+                            <span class="history-animal-emoji">${item.animal.emoji}</span>
+                            <span>${item.animal.name}</span>
+                        </span>
+                        <span class="history-fcr">${item.fcr.toFixed(2)}</span>
+                        <span class="history-rating" style="background: ${ratingColor.bg}; color: ${ratingColor.color}">
+                            ${item.rating.text}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+        }
+
+        function hideError() {
+            errorMessage.classList.remove('show');
+        }
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial gauge labels
+            const ranges = getFCRRanges('chicken');
+            gaugeMid.textContent = ranges.mid;
+        });
+    </script>
+</body>
+</html>
